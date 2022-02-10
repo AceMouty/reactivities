@@ -1,15 +1,15 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 import axios from "axios";
-import { Header, List } from 'semantic-ui-react';
+import { Activity } from './app/interfaces/Activity';
+import Layout from "./app/layout/Layout";
+import Dashboard from './features/activities/Dashboard/Dashboard';
 
 function App() {
-  const [activities, setActivities] = React.useState([])
+  const [activities, setActivities] = React.useState<Activity[]>([])
 
   React.useEffect(() => {
     async function getActivities() {
-      const res = await axios("http://localhost:5000/api/activities")
+      const res = await axios.get<Activity[]>("http://localhost:5000/api/activities")
       const data = res.data
       return data
     }
@@ -20,14 +20,9 @@ function App() {
   },[])
 
   return (
-    <div>
-      <Header as="h2" icon="users" content="Reactivities" />
-      <List>
-        {activities.map((activity: any) => {
-          return <List.Item key={activity.id}>{ activity.title }</List.Item>
-        })}
-      </List>
-    </div>
+    <Layout>
+      <Dashboard activities={activities} />
+    </Layout>
   );
 }
 
