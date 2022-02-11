@@ -7,18 +7,39 @@ import ActivityForm from "./ActivityForm"
 
 interface Props {
     activities: Activity[];
+    selectedActivity: Activity | null;
+    selectActivity: (id: string) => void;
+    clearActivity: () => void;
+    isEditing: boolean;
+    openForm: (id: string) => void;
+    closeForm: () => void;
 }
 
-export default function Dashboard({ activities }: Props) {
+export default function Dashboard({ 
+    activities, 
+    selectActivity, 
+    clearActivity, 
+    selectedActivity,
+    isEditing,
+    openForm,
+    closeForm
+}: Props) {
     return(
         <Grid>
             <GridColumn width={10}>
-                <ActivityList activities={activities} />
+                <ActivityList activities={activities} selectActivity={selectActivity} />
             </GridColumn>
             <GridColumn width={6}>
-                { activities.length && 
-                  <Details activity={activities[0]}/> }
-                <ActivityForm/>
+                { selectedActivity && !isEditing &&
+                  <Details 
+                    activity={selectedActivity} 
+                    clearActivity={clearActivity}
+                    openForm={openForm}
+                  /> 
+                }
+                { isEditing &&
+                  <ActivityForm closeForm={closeForm} activity={selectedActivity}/>
+                }
             </GridColumn>
         </Grid>
     )

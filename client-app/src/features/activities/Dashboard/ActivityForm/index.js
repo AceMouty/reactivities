@@ -1,1 +1,1 @@
-export { default } from "./ActivityForm.tsx";
+export { default } from "./ActivityForm";
