@@ -11,12 +11,10 @@ function App() {
     async function getActivities() {
       const res = await axios.get<Activity[]>("http://localhost:5000/api/activities")
       const data = res.data
-      return data
+      setActivities(data)
     }
 
     getActivities()
-    .then(data => setActivities(data))
-
   },[])
 
   return (
