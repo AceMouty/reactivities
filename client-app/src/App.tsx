@@ -4,11 +4,14 @@ import { Activity } from './app/interfaces/Activity';
 import Layout from "./app/layout/Layout";
 import Dashboard from './features/activities/Dashboard';
 import { getActivities } from "./app/services/ActivityService"
+import Loader from './app/layout/Loader';
+
 
 function App() {
   const [activities, setActivities] = React.useState<Activity[]>([])
   const [selectedActivity, setSelectedActivity] = React.useState<Activity | null>(null)
   const [isEditing, setIsEditing] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     async function getInitData() {
@@ -19,8 +22,9 @@ function App() {
         a.date = a.date.split("T")[0]
         activities.push(a)
       })
-      
+
       setActivities(activities)
+      setIsLoading((isLoading) => !isLoading)
     }
 
     getInitData()
@@ -56,6 +60,8 @@ function App() {
   function handleDeleteActivity(id: string) {
     setActivities([...activities.filter(a => a.id !== id)])
   }
+
+  if(isLoading) return <Loader />
 
   return (
     <Layout openForm={handleFormOpen}>
