@@ -50,38 +50,37 @@ function App() {
   }
 
   function handleCreateOrUpdateActivity(activity: Activity) {
-    setIsSubmitting(true)
+    setIsSubmitting((isSubmitting) => !isSubmitting)
 
-    debugger;
     // create new activity
     if(!activity.id) {
       activity.id = uuid()
       createActivity(activity)
       .then(() => {
         setActivities([...activities, activity])
-        setIsSubmitting(false)
-        setIsEditing(false)
+        setIsSubmitting((isSubmitting) => !isSubmitting)
+        setIsEditing((isEditing) => !isEditing)
       })
       return
     }
-    debugger;
+    
     // update activity
     updateActivity(activity)
     .then(() => {
       setActivities([...activities.filter(a => a.id !== activity.id), activity])
       setSelectedActivity(activity)
-      setIsEditing(false)
-      setIsSubmitting(false)
+      setIsEditing((isEditing) => !isEditing)
+      setIsSubmitting((isSubmitting) => isSubmitting)
     })
 
   }
 
   function handleDeleteActivity(id: string) {
-    setIsSubmitting(true)
+    setIsSubmitting((isSubmitting) => !isSubmitting)
     deleteActivity(id)
     .then(() => {
       setActivities([...activities.filter(a => a.id !== id)])
-      setIsSubmitting(false)
+      setIsSubmitting((isSubmitting) => !isSubmitting)
     })
   }
 
