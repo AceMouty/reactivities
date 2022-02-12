@@ -13,6 +13,8 @@ interface Props {
     isEditing: boolean;
     openForm: (id: string) => void;
     closeForm: () => void;
+    createOrUpdateActivity: (activity: Activity) => void;
+    deleteActivity: (id: string) => void;
 }
 
 export default function Dashboard({ 
@@ -22,12 +24,14 @@ export default function Dashboard({
     selectedActivity,
     isEditing,
     openForm,
-    closeForm
+    closeForm,
+    createOrUpdateActivity,
+    deleteActivity
 }: Props) {
     return(
         <Grid>
             <GridColumn width={10}>
-                <ActivityList activities={activities} selectActivity={selectActivity} />
+                <ActivityList activities={activities} selectActivity={selectActivity} deleteActivity={deleteActivity} />
             </GridColumn>
             <GridColumn width={6}>
                 { selectedActivity && !isEditing &&
@@ -38,7 +42,7 @@ export default function Dashboard({
                   /> 
                 }
                 { isEditing &&
-                  <ActivityForm closeForm={closeForm} activity={selectedActivity}/>
+                  <ActivityForm closeForm={closeForm} activity={selectedActivity} createOrUpdateActivity={createOrUpdateActivity}/>
                 }
             </GridColumn>
         </Grid>

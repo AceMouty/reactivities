@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from "axios";
+import { v4 as uuid } from "uuid";
 import { Activity } from './app/interfaces/Activity';
 import Layout from "./app/layout/Layout";
 import Dashboard from './features/activities/Dashboard';
@@ -37,6 +38,19 @@ function App() {
     setIsEditing(false)
   }
 
+  function handleCreateOrUpdateActivity(activity: Activity) {
+    activity.id 
+      ? setActivities([...activities.filter(a => a.id !== activity.id), activity])
+      : setActivities([...activities, {...activity, id: uuid()}])
+
+    setIsEditing(false)
+    setSelectedActivity(activity)
+  }
+
+  function handleDeleteActivity(id: string) {
+    setActivities([...activities.filter(a => a.id !== id)])
+  }
+
   return (
     <Layout openForm={handleFormOpen}>
       <Dashboard 
@@ -47,6 +61,8 @@ function App() {
         isEditing={isEditing}
         openForm={handleFormOpen}
         closeForm={handleFormClose}
+        createOrUpdateActivity={handleCreateOrUpdateActivity}
+        deleteActivity={handleDeleteActivity}
       />
     </Layout>
   );

@@ -1,16 +1,21 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 import { Activity } from "../../../../app/interfaces/Activity";
 
 interface Props {
     activities: Activity[];
     selectActivity: (id: string) => void;
+    deleteActivity: (id: string) => void;
 }
 
-export default function ActivityList({ activities, selectActivity }: Props){
+export default function ActivityList({ activities, selectActivity, deleteActivity }: Props){
 
-    function setSelectedActivity(id: string) {
-        selectActivity(id)
+    function setSelectedActivity(e: any) {
+        selectActivity(e.target.getAttribute("data-activity-id"))
+    }
+
+    function handleDeleteActivity(e: any) {
+        deleteActivity(e.target.getAttribute("data-activity-id"))
     }
 
     return(
@@ -35,12 +40,8 @@ export default function ActivityList({ activities, selectActivity }: Props){
                                     </div>
                                 </Item.Description>
                                 <Item.Extra>
-                                    <Button 
-                                        floated="right" 
-                                        content="View" 
-                                        color="blue"
-                                        onClick={() => setSelectedActivity(activity.id)} 
-                                    />
+                                    <Button data-activity-id={activity.id} floated="right" content="Delete" color="red" onClick={handleDeleteActivity} />
+                                    <Button data-activity-id={activity.id} floated="right" content="View" color="blue" onClick={setSelectedActivity} />
                                     <Label basic content={activity.category} />
                                 </Item.Extra>
                             </Item.Content>
