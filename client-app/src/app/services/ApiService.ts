@@ -27,11 +27,11 @@ export const doGet = <T>(uri: string) => {
 }
 
 export const doPost = (uri: string, data: {}) => {
-    return axios.post(uri).then(requestBody);
+    return axios.post(uri, data).then(requestBody);
 }
 
 export const doPut = (uri: string, data: {}) => {
-    return axios.get(uri).then(requestBody);
+    return axios.get(uri, data).then(requestBody);
 }
 
 export const doDelete = (uri: string) => {

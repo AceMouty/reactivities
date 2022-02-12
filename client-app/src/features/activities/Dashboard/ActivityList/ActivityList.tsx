@@ -1,21 +1,29 @@
-import React from "react";
+import React, { SyntheticEvent } from "react";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 import { Activity } from "../../../../app/interfaces/Activity";
 
 interface Props {
     activities: Activity[];
+    isSubmitting: boolean;
     selectActivity: (id: string) => void;
     deleteActivity: (id: string) => void;
 }
 
-export default function ActivityList({ activities, selectActivity, deleteActivity }: Props){
-
-    function setSelectedActivity(e: any) {
-        selectActivity(e.target.getAttribute("data-activity-id"))
+export default function ActivityList({ activities, selectActivity, deleteActivity, isSubmitting }: Props){
+    // TODO: figure out a better way to track the clicked element
+    const [target, setTarget] = React.useState("")
+    
+    function setSelectedActivity(e: React.MouseEvent<HTMLElement>) {
+        const id: string | null = e.currentTarget.getAttribute("data-activity-id")
+        if(id) selectActivity(id)
     }
 
-    function handleDeleteActivity(e: any) {
-        deleteActivity(e.target.getAttribute("data-activity-id"))
+    function handleDeleteActivity(e: React.MouseEvent<HTMLElement>) {
+        const id: string | null = e.currentTarget.getAttribute("data-activity-id")
+        if(id) {
+            setTarget(id)
+            deleteActivity(id)
+        }
     }
 
     return(
@@ -40,7 +48,14 @@ export default function ActivityList({ activities, selectActivity, deleteActivit
                                     </div>
                                 </Item.Description>
                                 <Item.Extra>
-                                    <Button data-activity-id={activity.id} floated="right" content="Delete" color="red" onClick={handleDeleteActivity} />
+                                    <Button 
+                                        loading={isSubmitting && target === activity.id} 
+                                        data-activity-id={activity.id} 
+                                        floated="right" 
+                                        content="Delete" 
+                                        color="red" 
+                                        onClick={handleDeleteActivity} 
+                                    />
                                     <Button data-activity-id={activity.id} floated="right" content="View" color="blue" onClick={setSelectedActivity} />
                                     <Label basic content={activity.category} />
                                 </Item.Extra>

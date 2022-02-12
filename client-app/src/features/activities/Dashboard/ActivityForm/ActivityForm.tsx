@@ -4,11 +4,17 @@ import { Activity } from "../../../../app/interfaces/Activity";
 
 interface Props {
     activity: Activity | null;
+    isSubmitting: boolean;
     closeForm: () => void;
     createOrUpdateActivity: (activity: Activity) => void;
 }
 
-export default function ActivityForm({ activity: selectedActivity, closeForm, createOrUpdateActivity }: Props) {
+export default function ActivityForm({ 
+    activity: selectedActivity, 
+    closeForm, 
+    createOrUpdateActivity, 
+    isSubmitting 
+}: Props) {
     const initialState = selectedActivity ?? {
         id: "",
         title: "",
@@ -71,7 +77,7 @@ export default function ActivityForm({ activity: selectedActivity, closeForm, cr
                     value={activity.venue}
                     onChange={handleInputChange}
                 />
-                <Button floated="right" positive type="submit" content="Submit" />
+                <Button loading={isSubmitting} floated="right" positive type="submit" content="Submit" />
                 <Button onClick={closeForm} floated="right" type="button" content="Cancel" />
             </Form>
         </Segment>

@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 import { Activity } from './app/interfaces/Activity';
 import Layout from "./app/layout/Layout";
 import Dashboard from './features/activities/Dashboard';
-import { getActivities } from "./app/services/ActivityService"
+import { getActivities, updateActivity, createActivity, deleteActivity } from "./app/services/ActivityService"
 import Loader from './app/layout/Loader';
 
 
@@ -12,6 +12,7 @@ function App() {
   const [selectedActivity, setSelectedActivity] = React.useState<Activity | null>(null)
   const [isEditing, setIsEditing] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
 
   React.useEffect(() => {
     async function getInitData() {
@@ -49,16 +50,39 @@ function App() {
   }
 
   function handleCreateOrUpdateActivity(activity: Activity) {
-    activity.id 
-      ? setActivities([...activities.filter(a => a.id !== activity.id), activity])
-      : setActivities([...activities, {...activity, id: uuid()}])
+    setIsSubmitting(true)
 
-    setIsEditing(false)
-    setSelectedActivity(activity)
+    debugger;
+    // create new activity
+    if(!activity.id) {
+      activity.id = uuid()
+      createActivity(activity)
+      .then(() => {
+        setActivities([...activities, activity])
+        setIsSubmitting(false)
+        setIsEditing(false)
+      })
+      return
+    }
+    debugger;
+    // update activity
+    updateActivity(activity)
+    .then(() => {
+      setActivities([...activities.filter(a => a.id !== activity.id), activity])
+      setSelectedActivity(activity)
+      setIsEditing(false)
+      setIsSubmitting(false)
+    })
+
   }
 
   function handleDeleteActivity(id: string) {
-    setActivities([...activities.filter(a => a.id !== id)])
+    setIsSubmitting(true)
+    deleteActivity(id)
+    .then(() => {
+      setActivities([...activities.filter(a => a.id !== id)])
+      setIsSubmitting(false)
+    })
   }
 
   if(isLoading) return <Loader />
@@ -75,6 +99,7 @@ function App() {
         closeForm={handleFormClose}
         createOrUpdateActivity={handleCreateOrUpdateActivity}
         deleteActivity={handleDeleteActivity}
+        isSubmitting={isSubmitting}
       />
     </Layout>
   );

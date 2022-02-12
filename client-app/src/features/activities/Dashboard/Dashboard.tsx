@@ -6,11 +6,12 @@ import Details from "./Details"
 import ActivityForm from "./ActivityForm"
 
 interface Props {
+    isEditing: boolean;
+    isSubmitting: boolean;
     activities: Activity[];
     selectedActivity: Activity | null;
     selectActivity: (id: string) => void;
     clearActivity: () => void;
-    isEditing: boolean;
     openForm: (id: string) => void;
     closeForm: () => void;
     createOrUpdateActivity: (activity: Activity) => void;
@@ -26,12 +27,18 @@ export default function Dashboard({
     openForm,
     closeForm,
     createOrUpdateActivity,
-    deleteActivity
+    deleteActivity,
+    isSubmitting
 }: Props) {
     return(
         <Grid>
             <GridColumn width={10}>
-                <ActivityList activities={activities} selectActivity={selectActivity} deleteActivity={deleteActivity} />
+                <ActivityList 
+                    activities={activities} 
+                    selectActivity={selectActivity} 
+                    deleteActivity={deleteActivity} 
+                    isSubmitting={isSubmitting} 
+                />
             </GridColumn>
             <GridColumn width={6}>
                 { selectedActivity && !isEditing &&
@@ -42,7 +49,12 @@ export default function Dashboard({
                   /> 
                 }
                 { isEditing &&
-                  <ActivityForm closeForm={closeForm} activity={selectedActivity} createOrUpdateActivity={createOrUpdateActivity}/>
+                    <ActivityForm 
+                        closeForm={closeForm} 
+                        activity={selectedActivity} 
+                        createOrUpdateActivity={createOrUpdateActivity}
+                        isSubmitting={isSubmitting}
+                    />
                 }
             </GridColumn>
         </Grid>
