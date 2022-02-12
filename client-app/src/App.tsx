@@ -1,9 +1,9 @@
 import React from 'react';
-import axios from "axios";
 import { v4 as uuid } from "uuid";
 import { Activity } from './app/interfaces/Activity';
 import Layout from "./app/layout/Layout";
 import Dashboard from './features/activities/Dashboard';
+import { getActivities } from "./app/services/ActivityService"
 
 function App() {
   const [activities, setActivities] = React.useState<Activity[]>([])
@@ -11,13 +11,19 @@ function App() {
   const [isEditing, setIsEditing] = React.useState(false);
 
   React.useEffect(() => {
-    async function getActivities() {
-      const res = await axios.get<Activity[]>("http://localhost:5000/api/activities")
-      const data = res.data
-      setActivities(data)
+    async function getInitData() {
+      const data = await getActivities()
+      // TODO: refactor later to support date format
+      const activities: Activity[] = []
+      data.forEach(a => {
+        a.date = a.date.split("T")[0]
+        activities.push(a)
+      })
+      
+      setActivities(activities)
     }
 
-    getActivities()
+    getInitData()
   },[])
 
   function handleSelectedActivity(id: string) {
