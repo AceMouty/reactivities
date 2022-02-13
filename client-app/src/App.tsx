@@ -11,7 +11,6 @@ import { observer } from 'mobx-react-lite';
 
 function App() {
   const { activityStore } = useStore();
-
   const [activities, setActivities] = React.useState<Activity[]>([])
   const [selectedActivity, setSelectedActivity] = React.useState<Activity | null>(null)
   const [isEditing, setIsEditing] = React.useState(false);
@@ -24,24 +23,6 @@ function App() {
 
     getInitData()
   },[])
-
-  function handleSelectedActivity(id: string) {
-    const activity: Activity | undefined = activities.find(a => a.id === id);
-    if(activity) setSelectedActivity(activity)
-  }
-
-  function handleClearActivity(){
-    setSelectedActivity(null)
-  }
-
-  function handleFormOpen(id? : string) {
-    id ? handleSelectedActivity(id) : handleClearActivity()
-    setIsEditing(true)
-  }
-
-  function handleFormClose() {
-    setIsEditing(false)
-  }
 
   function handleCreateOrUpdateActivity(activity: Activity) {
     setIsSubmitting((isSubmitting) => !isSubmitting)
@@ -81,15 +62,9 @@ function App() {
   if(activityStore.initialLoading) return <Loader />
 
   return (
-    <Layout openForm={handleFormOpen}>
+    <Layout>
       <Dashboard 
         activities={activityStore.activities}
-        selectedActivity={selectedActivity}
-        selectActivity={handleSelectedActivity}
-        clearActivity={handleClearActivity} 
-        isEditing={isEditing}
-        openForm={handleFormOpen}
-        closeForm={handleFormClose}
         createOrUpdateActivity={handleCreateOrUpdateActivity}
         deleteActivity={handleDeleteActivity}
         isSubmitting={isSubmitting}

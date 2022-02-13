@@ -1,21 +1,22 @@
 import React, { SyntheticEvent } from "react";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 import { Activity } from "../../../../app/interfaces/Activity";
+import { useStore } from "../../../../app/stores/store";
 
 interface Props {
     activities: Activity[];
     isSubmitting: boolean;
-    selectActivity: (id: string) => void;
     deleteActivity: (id: string) => void;
 }
 
-export default function ActivityList({ activities, selectActivity, deleteActivity, isSubmitting }: Props){
+export default function ActivityList({ activities, deleteActivity, isSubmitting }: Props){
     // TODO: figure out a better way to track the clicked element
     const [target, setTarget] = React.useState("")
-    
-    function setSelectedActivity(e: React.MouseEvent<HTMLElement>) {
-        const id: string | null = e.currentTarget.getAttribute("data-activity-id")
-        if(id) selectActivity(id)
+    const { activityStore } = useStore()
+
+    function handleSelectedActivity(e: any) {
+        const id: string | null = e.target.getAttribute("data-activity-id")
+        if(id) activityStore.setSelectedActivity(id)
     }
 
     function handleDeleteActivity(e: React.MouseEvent<HTMLElement>) {
@@ -56,7 +57,7 @@ export default function ActivityList({ activities, selectActivity, deleteActivit
                                         color="red" 
                                         onClick={handleDeleteActivity} 
                                     />
-                                    <Button data-activity-id={activity.id} floated="right" content="View" color="blue" onClick={setSelectedActivity} />
+                                    <Button data-activity-id={activity.id} floated="right" content="View" color="blue" onClick={handleSelectedActivity} />
                                     <Label basic content={activity.category} />
                                 </Item.Extra>
                             </Item.Content>

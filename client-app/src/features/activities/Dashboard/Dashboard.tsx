@@ -4,54 +4,39 @@ import { Activity } from "../../../app/interfaces/Activity"
 import ActivityList from "./ActivityList"
 import Details from "./Details"
 import ActivityForm from "./ActivityForm"
+import { useStore } from "../../../app/stores/store"
+import { observer } from "mobx-react-lite"
 
 interface Props {
-    isEditing: boolean;
     isSubmitting: boolean;
     activities: Activity[];
-    selectedActivity: Activity | null;
-    selectActivity: (id: string) => void;
-    clearActivity: () => void;
-    openForm: (id: string) => void;
-    closeForm: () => void;
     createOrUpdateActivity: (activity: Activity) => void;
     deleteActivity: (id: string) => void;
 }
 
-export default function Dashboard({ 
+function Dashboard({ 
     activities, 
-    selectActivity, 
-    clearActivity, 
-    selectedActivity,
-    isEditing,
-    openForm,
-    closeForm,
     createOrUpdateActivity,
     deleteActivity,
     isSubmitting
 }: Props) {
+    const { activityStore } = useStore()
+    const { selectedActivity, isEditing } = activityStore
     return(
         <Grid>
             <GridColumn width={10}>
                 <ActivityList 
                     activities={activities} 
-                    selectActivity={selectActivity} 
                     deleteActivity={deleteActivity} 
                     isSubmitting={isSubmitting} 
                 />
             </GridColumn>
             <GridColumn width={6}>
                 { selectedActivity && !isEditing &&
-                  <Details 
-                    activity={selectedActivity} 
-                    clearActivity={clearActivity}
-                    openForm={openForm}
-                  /> 
+                  <Details/> 
                 }
                 { isEditing &&
                     <ActivityForm 
-                        closeForm={closeForm} 
-                        activity={selectedActivity} 
                         createOrUpdateActivity={createOrUpdateActivity}
                         isSubmitting={isSubmitting}
                     />
@@ -60,3 +45,5 @@ export default function Dashboard({
         </Grid>
     )
 }
+
+export default observer(Dashboard)

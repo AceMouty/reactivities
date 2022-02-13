@@ -1,37 +1,46 @@
-import React from "react"
+import { observer } from "mobx-react-lite"
 import { Button, Card, Image } from "semantic-ui-react"
-import { Activity } from "../../../../app/interfaces/Activity"
+import { useStore } from "../../../../app/stores/store"
 
-interface Props {
-    activity: Activity;
-    clearActivity: () => void;
-    openForm: (id: string) => void;
-}
-
-export default function Details({ activity, clearActivity, openForm }: Props) {
+function Details() {
+    const { activityStore } = useStore()
+    const { selectedActivity: activity } = activityStore
 
     function handleCancel() {
-        clearActivity()
+        activityStore.clearSelectedActivity()
+    }
+
+    function handleOpenActivityForm(e: any) {
+        const id: string | null = e.target.getAttribute("data-activity-id")
+        if(id) activityStore.openActivityForm(id);
     }
 
     return (
         <Card fluid>
-            <Image src={`/assets/Images/categoryImages/${activity.category}.jpg`} />
+            <Image src={`/assets/Images/categoryImages/${activity?.category}.jpg`} />
             <Card.Content>
-            <Card.Header>{ activity.title }</Card.Header>
+            <Card.Header>{ activity?.title }</Card.Header>
             <Card.Meta>
-                <span className='date'>{ activity.date }</span>
+                <span className='date'>{ activity?.date }</span>
             </Card.Meta>
             <Card.Description>
-                { activity.description }
+                { activity?.description }
             </Card.Description>
             </Card.Content>
             <Card.Content extra>
                 <Button.Group widths={2}>
-                    <Button basic color="blue" content="Edit" onClick={() => openForm(activity.id)} />
+                    <Button 
+                        basic 
+                        color="blue" 
+                        content="Edit" 
+                        data-activity-id={activity?.id}
+                        onClick={handleOpenActivityForm} 
+                    />
                     <Button basic color="grey" content="Cancel" onClick={handleCancel}/>
                 </Button.Group>
             </Card.Content>
         </Card>
     )
 }
+
+export default observer(Details)
