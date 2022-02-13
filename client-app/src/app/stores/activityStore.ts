@@ -99,6 +99,7 @@ export default class ActivityStore {
             await deleteActivity(id)
             runInAction(() => {
                 this.activities = [...this.activities.filter(a => a.id !== id)]
+                if(this.selectedActivity?.id === id) this.clearSelectedActivity()
             })
         } catch (error) {
             console.log(error)

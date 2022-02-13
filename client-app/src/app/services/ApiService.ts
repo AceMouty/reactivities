@@ -31,9 +31,9 @@ export const doPost = (uri: string, data: {}) => {
 }
 
 export const doPut = (uri: string, data: {}) => {
-    return axios.get(uri, data).then(requestBody);
+    return axios.put(uri, data).then(requestBody);
 }
 
 export const doDelete = (uri: string) => {
-    return axios.get(uri).then(requestBody);
+    return axios.delete(uri).then(requestBody);
 }
