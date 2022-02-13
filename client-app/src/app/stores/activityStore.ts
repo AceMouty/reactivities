@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Activity } from "../interfaces/Activity";
-import { getActivities } from "../services/ActivityService";
+import { deleteActivity, getActivities } from "../services/ActivityService";
 import { createActivity, updateActivity } from "../services/ActivityService"
 import { v4 as uuid } from "uuid"
 
@@ -85,6 +85,20 @@ export default class ActivityStore {
                 this.activities = [...this.activities.filter(a => a.id !== activity.id), activity]
                 this.selectedActivity = activity;
                 this.isEditing = false;
+            })
+        } catch (error) {
+            console.log(error)
+        } finally {
+            this.setLoading(!this.loading)
+        }
+    }
+
+    deleteExistingActivity = async (id: string) => {
+        this.setLoading(!this.loading)
+        try {
+            await deleteActivity(id)
+            runInAction(() => {
+                this.activities = [...this.activities.filter(a => a.id !== id)]
             })
         } catch (error) {
             console.log(error)
