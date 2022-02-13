@@ -4,14 +4,13 @@ import NavBar from "./Navbar"
 import styles from "./styles.module.css"
 
 interface Props {
-    openForm: () => void;
     children: React.ReactNode;
 }
 
-export default function Layout({ children, openForm }: Props){
+export default function Layout({ children }: Props){
     return(
         <>
-            <NavBar bg={styles.bgGradient} openForm={openForm}/>
+            <NavBar bg={styles.bgGradient}/>
             <Container style={{marginTop: "7rem"}}>
                 { children }
             </Container>
