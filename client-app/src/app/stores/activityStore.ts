@@ -5,25 +5,34 @@ import { createActivity, updateActivity } from "../services/ActivityService"
 import { v4 as uuid } from "uuid"
 
 export default class ActivityStore {
-    activities: Activity[] = []
+    activityMap: Map<string, Activity> = new Map<string, Activity>();
     selectedActivity: Activity | null = null
     isEditing = false
     loading = false
-    initialLoading = false
+    initialLoading = true
 
     constructor() {
         makeAutoObservable(this)
     }
 
-    loadActivities = async () => {
-        this.setInitialLoading(!this.initialLoading)
+    // computed properties
+    get activitiesByDate() {
+        return Array.from(this.activityMap.values())
+                    .sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
+    }
 
+    get activities() {
+        return this.activitiesByDate
+    }
+
+    // actions
+    loadActivities = async () => {
         try {
             const data = await getActivities()
             // TODO: refactor later to support date format
             data.forEach(a => {
                 a.date = a.date.split("T")[0]
-                this.activities.push(a)
+                this.activityMap.set(a.id, a)
             })
         }
         catch(e) {
@@ -39,7 +48,7 @@ export default class ActivityStore {
     setLoading = (state: boolean) => this.loading = state;
 
     setSelectedActivity = (id: string) => {
-        const activity: Activity | undefined = this.activities.find(a => a.id === id)
+        const activity: Activity | undefined = this.activityMap.get(id)
         if (activity) {
             this.selectedActivity = activity;
         }
@@ -66,7 +75,7 @@ export default class ActivityStore {
         try {
             await createActivity(activity)
             runInAction(() => {
-                this.activities.push(activity)
+                this.activityMap.set(activity.id, activity)
                 this.selectedActivity = activity
                 this.isEditing = false;
             })
@@ -82,7 +91,7 @@ export default class ActivityStore {
         try {
             await updateActivity(activity)
             runInAction(() => {
-                this.activities = [...this.activities.filter(a => a.id !== activity.id), activity]
+                this.activityMap.set(activity.id, activity)
                 this.selectedActivity = activity;
                 this.isEditing = false;
             })
@@ -98,7 +107,7 @@ export default class ActivityStore {
         try {
             await deleteActivity(id)
             runInAction(() => {
-                this.activities = [...this.activities.filter(a => a.id !== id)]
+                this.activityMap.delete(id)
                 if(this.selectedActivity?.id === id) this.clearSelectedActivity()
             })
         } catch (error) {
