@@ -5,27 +5,21 @@ import Layout from "./app/layout/Layout";
 import Dashboard from './features/activities/Dashboard';
 import { getActivities, updateActivity, createActivity, deleteActivity } from "./app/services/ActivityService"
 import Loader from './app/layout/Loader';
+import { useStore } from './app/stores/store';
+import { observer } from 'mobx-react-lite';
 
 
 function App() {
+  const { activityStore } = useStore();
+
   const [activities, setActivities] = React.useState<Activity[]>([])
   const [selectedActivity, setSelectedActivity] = React.useState<Activity | null>(null)
   const [isEditing, setIsEditing] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false)
 
   React.useEffect(() => {
     async function getInitData() {
-      const data = await getActivities()
-      // TODO: refactor later to support date format
-      const activities: Activity[] = []
-      data.forEach(a => {
-        a.date = a.date.split("T")[0]
-        activities.push(a)
-      })
-
-      setActivities(activities)
-      setIsLoading((isLoading) => !isLoading)
+      activityStore.loadActivities()
     }
 
     getInitData()
@@ -84,12 +78,12 @@ function App() {
     })
   }
 
-  if(isLoading) return <Loader />
+  if(activityStore.initialLoading) return <Loader />
 
   return (
     <Layout openForm={handleFormOpen}>
       <Dashboard 
-        activities={activities}
+        activities={activityStore.activities}
         selectedActivity={selectedActivity}
         selectActivity={handleSelectedActivity}
         clearActivity={handleClearActivity} 
@@ -104,4 +98,4 @@ function App() {
   );
 }
 
-export default App;
+export default observer(App);
