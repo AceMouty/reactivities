@@ -1,29 +1,25 @@
-import React, { SyntheticEvent } from "react";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
-import { Activity } from "../../../../app/interfaces/Activity";
 import { useStore } from "../../../../app/stores/store";
 
-interface Props {
-    activities: Activity[];
-    isSubmitting: boolean;
-    deleteActivity: (id: string) => void;
-}
-
-export default function ActivityList({ activities, deleteActivity, isSubmitting }: Props){
+export default observer( function ActivityList(){
     // TODO: figure out a better way to track the clicked element
     const [target, setTarget] = React.useState("")
     const { activityStore } = useStore()
 
+    const { deleteExistingActivity, setSelectedActivity, loading, activities} = activityStore
+
     function handleSelectedActivity(e: any) {
         const id: string | null = e.target.getAttribute("data-activity-id")
-        if(id) activityStore.setSelectedActivity(id)
+        if(id) setSelectedActivity(id)
     }
 
     function handleDeleteActivity(e: React.MouseEvent<HTMLElement>) {
         const id: string | null = e.currentTarget.getAttribute("data-activity-id")
         if(id) {
             setTarget(id)
-            deleteActivity(id)
+            deleteExistingActivity(id)
         }
     }
 
@@ -50,7 +46,7 @@ export default function ActivityList({ activities, deleteActivity, isSubmitting 
                                 </Item.Description>
                                 <Item.Extra>
                                     <Button 
-                                        loading={isSubmitting && target === activity.id} 
+                                        loading={loading && target === activity.id} 
                                         data-activity-id={activity.id} 
                                         floated="right" 
                                         content="Delete" 
@@ -67,4 +63,4 @@ export default function ActivityList({ activities, deleteActivity, isSubmitting 
             </Item.Group>
         </Segment>
     )
-}
+})
