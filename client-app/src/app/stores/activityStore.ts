@@ -1,6 +1,8 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Activity } from "../interfaces/Activity";
 import { getActivities } from "../services/ActivityService";
+import { createActivity, updateActivity } from "../services/ActivityService"
+import { v4 as uuid } from "uuid"
 
 export default class ActivityStore {
     activities: Activity[] = []
@@ -33,6 +35,8 @@ export default class ActivityStore {
     }
 
     setInitialLoading = (state: boolean) => this.initialLoading = state;
+    
+    setLoading = (state: boolean) => this.loading = state;
 
     setSelectedActivity = (id: string) => {
         const activity: Activity | undefined = this.activities.find(a => a.id === id)
@@ -52,5 +56,40 @@ export default class ActivityStore {
 
     closeActivityForm = () => {
         this.isEditing = false;
+    }
+
+
+    createNewActivity = async (activity: Activity) =>  {
+        this.setLoading(!this.loading)
+        activity.id = uuid()
+
+        try {
+            await createActivity(activity)
+            runInAction(() => {
+                this.activities.push(activity)
+                this.selectedActivity = activity
+                this.isEditing = false;
+            })
+        } catch (error) {
+            console.log(error)
+        } finally {
+            this.setLoading(!this.loading)
+        }
+    }
+
+    updateExistingActivity = async (activity: Activity) => {
+        this.setLoading(!this.loading)
+        try {
+            await updateActivity(activity)
+            runInAction(() => {
+                this.activities = [...this.activities.filter(a => a.id !== activity.id), activity]
+                this.selectedActivity = activity;
+                this.isEditing = false;
+            })
+        } catch (error) {
+            console.log(error)
+        } finally {
+            this.setLoading(!this.loading)
+        }
     }
 }
