@@ -33,4 +33,24 @@ export default class ActivityStore {
     }
 
     setInitialLoading = (state: boolean) => this.initialLoading = state;
+
+    setSelectedActivity = (id: string) => {
+        const activity: Activity | undefined = this.activities.find(a => a.id === id)
+        if (activity) {
+            this.selectedActivity = activity;
+        }
+    }
+
+    clearSelectedActivity = () => {
+        this.selectedActivity = null;
+    }
+
+    openActivityForm = (id?: string) => {
+        id ? this.setSelectedActivity(id) : this.clearSelectedActivity()
+        this.isEditing = true;
+    }
+
+    closeActivityForm = () => {
+        this.isEditing = false;
+    }
 }
