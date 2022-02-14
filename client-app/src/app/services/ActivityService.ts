@@ -8,7 +8,7 @@ export const getActivities = () => {
 }
 
 export const getActivityDetails = (id: string) => {
-    return doGet(`${serviceURL}/${id}`)
+    return doGet<Activity>(`${serviceURL}/${id}`)
 }
 
 export const createActivity = (activity: Activity) => {

@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Activity } from "../interfaces/Activity";
-import { deleteActivity, getActivities } from "../services/ActivityService";
+import { deleteActivity, getActivities, getActivityDetails } from "../services/ActivityService";
 import { createActivity, updateActivity } from "../services/ActivityService"
 import { v4 as uuid } from "uuid"
 
@@ -27,12 +27,13 @@ export default class ActivityStore {
 
     // actions
     loadActivities = async () => {
+        if(this.activityMap.size) return;
+        
+        this.setInitialLoading(true)
         try {
             const data = await getActivities()
-            // TODO: refactor later to support date format
             data.forEach(a => {
-                a.date = a.date.split("T")[0]
-                this.activityMap.set(a.id, a)
+                this.setActivity(a)
             })
         }
         catch(e) {
@@ -43,30 +44,26 @@ export default class ActivityStore {
         }
     }
 
-    setInitialLoading = (state: boolean) => this.initialLoading = state;
-    
-    setLoading = (state: boolean) => this.loading = state;
+    loadActivity = async (id: string) => {
+        let activity = this.getActivity(id);
 
-    setSelectedActivity = (id: string) => {
-        const activity: Activity | undefined = this.activityMap.get(id)
-        if (activity) {
-            this.selectedActivity = activity;
+        if(activity) {
+            this.setSelectedActivity(activity)
+            return;
+        }
+
+        try {
+            activity = await getActivityDetails(id)
+            console.log("ACTIVITY FROM ACTION: ", activity)
+            this.setActivity(activity)
+            this.setSelectedActivity(activity)
+            console.log("INITIAL LODAING: ", this.initialLoading)
+        } catch(err) {
+            console.log(err)
+        } finally {
+            this.setInitialLoading(!this.initialLoading)
         }
     }
-
-    clearSelectedActivity = () => {
-        this.selectedActivity = null;
-    }
-
-    openActivityForm = (id?: string) => {
-        id ? this.setSelectedActivity(id) : this.clearSelectedActivity()
-        this.isEditing = true;
-    }
-
-    closeActivityForm = () => {
-        this.isEditing = false;
-    }
-
 
     createNewActivity = async (activity: Activity) =>  {
         this.setLoading(!this.loading)
@@ -108,12 +105,30 @@ export default class ActivityStore {
             await deleteActivity(id)
             runInAction(() => {
                 this.activityMap.delete(id)
-                if(this.selectedActivity?.id === id) this.clearSelectedActivity()
             })
         } catch (error) {
             console.log(error)
         } finally {
             this.setLoading(!this.loading)
         }
+    }
+
+    // private actions
+    setInitialLoading = (state: boolean) => this.initialLoading = state;
+    
+    setLoading = (state: boolean) => this.loading = state;
+
+    private getActivity = (id: string) => {
+        return this.activityMap.get(id);
+    }
+
+    private setActivity = (activity: Activity) => {
+        // TODO: refactor later to support date format
+        activity.date = activity.date.split("T")[0]
+        this.activityMap.set(activity.id, activity)
+    }
+
+    private setSelectedActivity = (acivity: Activity) => {
+        this.selectedActivity = acivity;
     }
 }

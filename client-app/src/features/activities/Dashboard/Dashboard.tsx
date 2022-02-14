@@ -27,12 +27,7 @@ function Dashboard() {
                 <ActivityList />
             </GridColumn>
             <GridColumn width={6}>
-                { selectedActivity && !isEditing &&
-                  <Details/> 
-                }
-                { isEditing &&
-                    <ActivityForm />
-                }
+                <h2>Activity Filters</h2>
             </GridColumn>
         </Grid>
     )

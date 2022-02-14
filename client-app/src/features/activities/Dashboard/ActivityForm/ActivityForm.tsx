@@ -5,7 +5,7 @@ import { useStore } from "../../../../app/stores/store";
 
 function ActivityForm() {
     const { activityStore } = useStore()
-    const { selectedActivity, closeActivityForm, loading, createNewActivity, updateExistingActivity } = activityStore
+    const { selectedActivity, loading, createNewActivity, updateExistingActivity } = activityStore
 
     const initialState = selectedActivity ?? {
         id: "",
@@ -72,7 +72,7 @@ function ActivityForm() {
                     onChange={handleInputChange}
                 />
                 <Button loading={loading} floated="right" positive type="submit" content="Submit" />
-                <Button onClick={closeActivityForm} floated="right" type="button" content="Cancel" />
+                <Button floated="right" type="button" content="Cancel" />
             </Form>
         </Segment>
     )

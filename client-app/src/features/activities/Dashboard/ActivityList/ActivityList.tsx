@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { Link } from "react-router-dom";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 import { useStore } from "../../../../app/stores/store";
 
@@ -8,12 +9,7 @@ export default observer( function ActivityList(){
     const [target, setTarget] = React.useState("")
     const { activityStore } = useStore()
 
-    const { deleteExistingActivity, setSelectedActivity, loading, activities} = activityStore
-
-    function handleSelectedActivity(e: any) {
-        const id: string | null = e.target.getAttribute("data-activity-id")
-        if(id) setSelectedActivity(id)
-    }
+    const { deleteExistingActivity, loading, activities} = activityStore
 
     function handleDeleteActivity(e: React.MouseEvent<HTMLElement>) {
         const id: string | null = e.currentTarget.getAttribute("data-activity-id")
@@ -53,7 +49,14 @@ export default observer( function ActivityList(){
                                         color="red" 
                                         onClick={handleDeleteActivity} 
                                     />
-                                    <Button data-activity-id={activity.id} floated="right" content="View" color="blue" onClick={handleSelectedActivity} />
+                                    <Button 
+                                        as={Link}
+                                        to={`/activities/${activity.id}`}
+                                        data-activity-id={activity.id} 
+                                        floated="right" 
+                                        content="View" 
+                                        color="blue" 
+                                    />
                                     <Label basic content={activity.category} />
                                 </Item.Extra>
                             </Item.Content>
