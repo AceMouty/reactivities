@@ -1,27 +1,19 @@
-import React from 'react';
 import Layout from "./app/layout/Layout";
-import Dashboard from './features/activities/Dashboard';
-import Loader from './app/layout/Loader';
-import { useStore } from './app/stores/store';
+import Activities from "./pages/Activities";
 import { observer } from 'mobx-react-lite';
+import { Route, Switch } from 'react-router-dom';
+import Home from './pages/Home';
+import ActivityForm from './features/activities/Dashboard/ActivityForm';
 
 
 function App() {
-  const { activityStore } = useStore();
-
-  React.useEffect(() => {
-    async function getInitData() {
-      activityStore.loadActivities()
-    }
-
-    getInitData()
-  },[])
-
-  if(activityStore.initialLoading) return <Loader />
-
   return (
     <Layout>
-      <Dashboard />
+      <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route path="/activities" component={Activities}/>
+        <Route exact path="/createActivity" component={ActivityForm}/>
+      </Switch>
     </Layout>
   );
 }
