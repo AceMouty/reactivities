@@ -8,8 +8,7 @@ import { observer } from "mobx-react-lite"
 import Loader from "../../../app/layout/Loader"
 
 function Dashboard() {
-    const { activityStore } = useStore();
-    const { selectedActivity, isEditing } = activityStore;
+  const { activityStore } = useStore();
 
   React.useEffect(() => {
     async function getInitData() {
