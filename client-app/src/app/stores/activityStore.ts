@@ -2,7 +2,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { Activity } from "../interfaces/Activity";
 import { deleteActivity, getActivities, getActivityDetails } from "../services/ActivityService";
 import { createActivity, updateActivity } from "../services/ActivityService"
-import { v4 as uuid } from "uuid"
 
 export default class ActivityStore {
     activityMap: Map<string, Activity> = new Map<string, Activity>();
@@ -65,7 +64,6 @@ export default class ActivityStore {
 
     createNewActivity = async (activity: Activity) =>  {
         this.setLoading(!this.loading)
-        activity.id = uuid()
 
         try {
             await createActivity(activity)
