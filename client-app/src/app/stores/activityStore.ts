@@ -27,7 +27,6 @@ export default class ActivityStore {
 
     // actions
     loadActivities = async () => {
-        if(this.activityMap.size) return;
         
         this.setInitialLoading(true)
         try {
@@ -49,15 +48,14 @@ export default class ActivityStore {
 
         if(activity) {
             this.setSelectedActivity(activity)
-            return;
+            return activity;
         }
 
         try {
             activity = await getActivityDetails(id)
-            console.log("ACTIVITY FROM ACTION: ", activity)
             this.setActivity(activity)
             this.setSelectedActivity(activity)
-            console.log("INITIAL LODAING: ", this.initialLoading)
+            return activity;
         } catch(err) {
             console.log(err)
         } finally {
