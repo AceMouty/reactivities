@@ -9,14 +9,14 @@ import Loader from "../../../app/layout/Loader"
 
 function Dashboard() {
   const { activityStore } = useStore();
-
+  const { loadActivities, activityMap } = activityStore
   React.useEffect(() => {
     async function getInitData() {
-      activityStore.loadActivities()
+      if(activityMap.size <= 1) loadActivities();
     }
 
     getInitData()
-  },[])
+  },[activityMap, loadActivities])
 
   if(activityStore.initialLoading) return <Loader />
 
