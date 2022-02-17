@@ -53,7 +53,7 @@ function ActivityListItem({ activity }: Props) {
             <Segment secondary>
                 Atendees Here
             </Segment>
-            <Segment >
+            <Segment clearing>
                 {activity.description}
                 <Button 
                     as={Link} 
