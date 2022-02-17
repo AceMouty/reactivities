@@ -3,7 +3,7 @@ import Activities from "./pages/Activities";
 import { observer } from 'mobx-react-lite';
 import { Route, Switch, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
-import ActivityForm from './features/activities/Dashboard/ActivityForm';
+import ActivityForm from './features/activities/ActivityForm';
 import ActivityDetails from "./pages/ActivityDetails/ActivityDetails";
 
 
