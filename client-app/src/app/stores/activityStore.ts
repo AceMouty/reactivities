@@ -24,6 +24,20 @@ export default class ActivityStore {
         return this.activitiesByDate
     }
 
+    get groupedActivites() {
+       return Object.entries(
+           this.activitiesByDate.reduce((activities, activity) => {
+            const { date } = activity
+            activities[date] = activities[date] 
+            ? [...activities[date], activity]
+            : [activity]
+
+            return activities
+
+            }, {} as {[key: string]: Activity[]})
+        )
+    }
+
     // actions
     loadActivities = async () => {
         
