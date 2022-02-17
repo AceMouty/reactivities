@@ -1,9 +1,13 @@
 import * as React from "react"
 import { observer } from "mobx-react-lite"
 import { Link, useParams } from "react-router-dom"
-import { Button, Card, Image } from "semantic-ui-react"
+import { Button, Card, Grid, Image } from "semantic-ui-react"
 import Loader from "../../../app/layout/Loader"
 import { useStore } from "../../../app/stores/store"
+import ActivityDetailsHeader from "./ActivityDetailsHeader"
+import ActivityDetailsInfo from "./ActivityDetailsInfo"
+import ActivityDetailsChat from "./ActivityDetailsChat"
+import ActivityDetailsSidebar from "./ActivityDetailsSidebar"
 
 function Details() {
     const { activityStore } = useStore();
@@ -21,30 +25,16 @@ function Details() {
     if(initialLoading || !activity) return <Loader />
 
     return (
-        <Card fluid>
-            <Image src={`/assets/Images/categoryImages/${activity?.category}.jpg`} />
-            <Card.Content>
-            <Card.Header>{ activity?.title }</Card.Header>
-            <Card.Meta>
-                <span className='date'>{ activity?.date }</span>
-            </Card.Meta>
-            <Card.Description>
-                { activity?.description }
-            </Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-                <Button.Group widths={2}>
-                    <Button 
-                        basic 
-                        as={Link}
-                        to={`/manage/${activity?.id}`}
-                        color="blue" 
-                        content="Edit" 
-                    />
-                    <Button as={Link} to="/activities" basic color="grey" content="Cancel" />
-                </Button.Group>
-            </Card.Content>
-        </Card>
+        <Grid>
+            <Grid.Column width={10}>
+                <ActivityDetailsHeader/>
+                <ActivityDetailsInfo/>
+                <ActivityDetailsChat/>
+            </Grid.Column>
+            <Grid.Column width={6}>
+                <ActivityDetailsSidebar/>
+            </Grid.Column>
+        </Grid>
     )
 }
 
