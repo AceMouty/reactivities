@@ -1,0 +1,27 @@
+.masthead {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(
+            135deg,
+            rgb(24, 42, 115) 0%,
+            rgb(33, 138, 174) 69%,
+            rgb(32, 167, 172) 89%
+    ) !important;
+    height: 100vh;
+  }
+  
+  .masthead > .invertedButton {
+    margin-left: 0.5em;
+  }
+  
+  .masthead > .mainHeader {
+    font-size: 4em;
+    font-weight: normal;
+  }
+  
+  .masthead > .subHeader {
+    font-size: 1.7em;
+    font-weight: normal;
+  }

@@ -11,14 +11,15 @@ function App() {
   const location = useLocation()
 
   return (
-    <Layout>
+    
       <Switch>
         <Route exact path="/" component={Home}/>
-        <Route exact path="/activities" component={Activities}/>
-        <Route path="/activities/:id" component={ActivityDetails}/>
-        <Route key={location.key} exact path={["/createActivity", "/manage/:id"]} component={ActivityForm}/>
+        <Layout>
+          <Route exact path="/activities" component={Activities}/>
+          <Route path="/activities/:id" component={ActivityDetails}/>
+          <Route key={location.key} exact path={["/createActivity", "/manage/:id"]} component={ActivityForm}/>
+        </Layout>
       </Switch>
-    </Layout>
   );
 }
 
